@@ -30,10 +30,10 @@
     },
     {
       "id": "stag",
-      "name": "stag",
-      "description": "cheap but tasty",
-      "recipe": "pour into pint",
-      "serve": "server with pickle"
+      "name": "Stag",
+      "description": "Cheap but tasty",
+      "recipe": "Pour in chilled pint",
+      "serve": "serve with pickle"
     }
   ],
   "snacks": [

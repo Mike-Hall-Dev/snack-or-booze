@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import SnackOrBoozeApi from "./Api";
 
 
-const NewItemForm = ({ createID }) => {
+const NewItemForm = ({ createID, addItem }) => {
     const INITIAL_STATE = {
         name: '',
         description: '',
@@ -23,12 +22,11 @@ const NewItemForm = ({ createID }) => {
         }))
     }
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         const itemID = createID(formData);
         const newItem = { "id": itemID, ...formData };
-        type === "drink" ? await SnackOrBoozeApi.addDrink(newItem) : await SnackOrBoozeApi.addSnack(newItem)
+        addItem(newItem, type);
         setFormData(INITIAL_STATE);
         history.push("/")
     }

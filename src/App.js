@@ -12,7 +12,7 @@ import AddItem from "./AddItem";
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [snacks, setSnacks] = useState([]);
-  const [drinks, setDrinks] = useState([])
+  const [drinks, setDrinks] = useState([]);
 
   useEffect(() => {
     async function getSnacksOrBooze() {
@@ -23,10 +23,23 @@ function App() {
       setIsLoading(false);
     }
     getSnacksOrBooze();
-  }, []);
+  }, [isLoading]);
 
   if (isLoading) {
     return <p>Loading &hellip;</p>;
+  }
+
+  const createID = (itemObj) => {
+    let itemName = itemObj.name.toLowerCase();
+    let itemID = itemName.replace(/ /g, '-');
+    return itemID;
+  }
+
+  const addItem = async (formData, type) => {
+    const itemID = createID(formData);
+    const newItem = { "id": itemID, ...formData };
+    type === "drink" ? await SnackOrBoozeApi.addDrink(newItem) : await SnackOrBoozeApi.addSnack(newItem);
+    setIsLoading(true);
   }
 
   return (
@@ -51,7 +64,7 @@ function App() {
               <Snack items={drinks} cantFind="/drinks" />
             </Route>
             <Route path="/new">
-              <AddItem />
+              <AddItem createID={createID} addItem={addItem} />
             </Route>
             <Route>
               <p>Hmmm. I can't seem to find what you want.</p>
