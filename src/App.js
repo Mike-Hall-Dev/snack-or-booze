@@ -8,6 +8,8 @@ import { Route, Switch } from "react-router-dom";
 import Menu from "./Menu";
 import Snack from "./MenuItem";
 import AddItem from "./AddItem";
+import Loading from "./Loading";
+
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -15,19 +17,18 @@ function App() {
   const [drinks, setDrinks] = useState([]);
 
   useEffect(() => {
-    async function getSnacksOrBooze() {
-      let snacks = await SnackOrBoozeApi.getSnacks();
-      let drinks = await SnackOrBoozeApi.getDrinks();
-      setSnacks(snacks);
-      setDrinks(drinks);
-      setIsLoading(false);
-    }
-    getSnacksOrBooze();
-  }, [isLoading]);
+    getSnacksOrBooze().then(() => setIsLoading(false));
+  }, []);
 
-  if (isLoading) {
-    return <p>Loading &hellip;</p>;
+  async function getSnacksOrBooze() {
+    let snacks = await SnackOrBoozeApi.getSnacks();
+    let drinks = await SnackOrBoozeApi.getDrinks();
+    setSnacks(snacks);
+    setDrinks(drinks);
+    setIsLoading(false);
   }
+
+  if (isLoading) return <Loading />
 
   const createID = (itemObj) => {
     let itemName = itemObj.name.toLowerCase();
@@ -36,10 +37,11 @@ function App() {
   }
 
   const addItem = async (formData, type) => {
+    setIsLoading(true);
     const itemID = createID(formData);
     const newItem = { "id": itemID, ...formData };
     type === "drink" ? await SnackOrBoozeApi.addDrink(newItem) : await SnackOrBoozeApi.addSnack(newItem);
-    setIsLoading(true);
+    await getSnacksOrBooze();
   }
 
   return (
